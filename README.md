@@ -18,9 +18,15 @@ sudo apt install ros-noetic-image-view
 詳しい使い方は[こちら](http://wiki.ros.org/image_view)
 
 ## ソースコード
+### color_img_recog
 - color_img_recog.py
-https://qiita.com/keinko/items/c8f9390419cb1cbb6467
-上記リンク内に記載されている「コーディング」のコードをコピーしたものである．
+https://qiita.com/keinko/items/c8f9390419cb1cbb6467\
+サイトのサンプルコードを基準に，noeticのturtlesimで動くように，修正を加えたもの\
+- 実行方法
+```bash
+roslaunch image_recognition_study color_img_recog.launch
+```
+カメラで取得した画像の中に青色を認識したら前進し，赤色を認識したら更新する．
 
 ## 利用したコマンド
 - aptでinstallしたパッケージの確認
@@ -63,6 +69,29 @@ cv_bridgeがパッケージ名であるので，適宜変更する．
 - rosのパッケージでpython3系に対応しているものの階層への移動
 ```bash
 cd /opt/ros/noetic/lib/python3/dist-packages
+```
+
+- turtlesimの起動
+参考リンク：http://wiki.ros.org/ja/ROS/Tutorials/UnderstandingTopics
+```bash
+roscore
+---
+rosrun turtlesim turtlesim_node
+```
+
+- turtlesimを矢印操作で動かすパッケージの起動
+```bash
+rosrun turtlesim turtle_teleop_key
+```
+
+- トピックをグラフで確認
+```
+rosrun rqt_graph rqt_graph
+```
+
+- turtlesimに送信しているトピックの型を出力する
+```bash
+rostopic type /turtle1/cmd_vel
 ```
 
 ## 参考リンク一覧
