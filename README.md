@@ -2,6 +2,24 @@
 
 画像認識に関する基礎的な知識を得るために，実践的にプログラムを試すためのパッケージである．
 
+## 開発内容
+- ②bag_detect：紙袋を認識する
+- ③bag_catch：紙袋を取得するための画像処理（紙袋取得をスキップせずに，RealSenseを用いて，距離などを取得する場合）
+- ⑤person_detect：人間を認識する
+- ⑥person_feature_recognition：人間の特徴量を取得する（最低でも４つ必要）
+
+
+### 既にあるものから必要な部分を抽出して，パッケージ化するもの
+②：2023年度のCMLの中にあるはず\
+⑤：どっかにあるはず（CMLとか？）\
+⑥：2023年度のFindMyMatesとかの画像認識の中に含まれているはず
+
+### 新規に作成するもの
+（③）
+
+### 開発
+- [YOLOv8を動かすだけのpythonファイル](notes/yolov8_detect.md)
+
 ## 環境構築
 - Ubuntu 20.04
 - ROS Noetic
@@ -92,6 +110,57 @@ rosrun rqt_graph rqt_graph
 - turtlesimに送信しているトピックの型を出力する
 ```bash
 rostopic type /turtle1/cmd_vel
+```
+
+## 得られた知識
+- ROSのimage_rawトピックをOpenCVで利用するための処理と，OpenCVで作成した画像ファイルをrosで利用するための処理
+実行例
+```bash
+roscore
+---
+rosrun usb_cam usb_cam_node _video_device:=/dev/video0
+---
+rosrun image_view image_view:=/usb_cam/image_raw
+---
+rosrun image_recognition_study color_img_recognition.py
+```
+ソースコード
+```python
+#!/usr/bin/env python3.8
+# -*- coding: utf-8 -*-
+
+import rospy
+import cv2
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class ImgmsgCv:
+    def __init__(self):
+        self._image_sub = rospy.Subcriber('/usb_cam/image_raw', Image, self.callback)
+        self._bridge = CvBridge()
+    
+    def callback(self, data):
+        # 引数dataは，ROSのmsgの画像データ
+
+        # 変数cv_imageにROSのmsgから，OpenCVで利用できる画像に変換して代入する
+        try:
+            _cv_image = self._bridge.imgmsg_to_cv2(data, 'bgr8')
+        except CvBridgeError as e:
+            print(e)
+
+        # 変数imgmsgにOpenCVで利用できる画像から，ROSのmsgの画像に変換して代入する
+        try:
+            _imgmsg = self._bridge.cv2_to_imgmsg(_cv_image, 'bgr8')
+        except CvBridgeError as e:
+            print(e)
+
+if __name__ == '__main__':
+    rospy.init_node('imgmsg_cv')
+    imgmsg_cv = ImgmsgCv()
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        pass
 ```
 
 ## 参考リンク一覧
