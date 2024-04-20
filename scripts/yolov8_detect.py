@@ -15,9 +15,8 @@ class Yolov8_detect:
         self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
         self._bridge = CvBridge()
         self.model = YOLO("yolov8n.pt")
-    def detect(self, img):
-        rospy.loginfo(type(img))
 
+    def detect(self, img):
         results = self.model.predict(img)
 
         for r in results:
