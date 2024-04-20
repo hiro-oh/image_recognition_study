@@ -12,9 +12,9 @@ import cv2
 
 class Yolov8_detect:
     def __init__(self):
-        self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
-        self._bridge = CvBridge()
         self.model = YOLO("yolov8n.pt")
+        self._bridge = CvBridge()
+        self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
 
     def detect(self, img):
         results = self.model.predict(img)
