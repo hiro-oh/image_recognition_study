@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Yolov8の起動 -->
+    <include file="$(find image_ros_object_detection_yolov8)/launch/yolov8_detect.launch"/>
+
+</launch>
